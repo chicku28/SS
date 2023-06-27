@@ -1,0 +1,49 @@
+Lex Part:
+gedit lab2.l
+
+%{
+#include "y.tab.h"
+%}
+%%
+a {return A;}
+b {return B;}
+\n {return 0;}
+. {return yytext[0];}
+
+Yacc Part
+gedit lab2.y
+
+%{
+#include <stdio.h>
+int acount=0,n;
+%}
+%token A 
+%token B
+%%
+S : X B {if(acount<n || acount>n)
+		{
+		printf("FAIL"); exit(0);}
+		}
+X : X T | T 
+T : A { acount++;}
+;
+%%
+int main()
+{	printf("Enter the value of n \n");
+        scanf("%d",&n);
+	printf("Enter the string\n");
+	yyparse();
+	printf("Valid string\n");
+}
+int yyerror()
+{
+	printf("Invalid string\n");
+	exit(0);
+}
+
+//[root@localhost ~]# gedit lab2.l
+//[root@localhost ~]# gedit lab2.y
+//[root@localhost ~]# lex lab2.l
+//[root@localhost ~]# yacc -d lab2.y
+//[root@localhost ~]# cc lex.yy.c y.tab.c -ll
+//[root@localhost ~]# ./a.out
